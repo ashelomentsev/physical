@@ -1,0 +1,168 @@
+
+[1m[0m[1m[0m  [1mNAME[0m                                                                                                                                                        
+                                                                                                                                                              
+      [1mnebius compute disk create[0m                                                                                                                              
+        Creates a new disk with the specified configuration.                                                                                                  
+        For details, see [38;5;36;4mhttps://docs.nebius.com/compute/storage/manage[0m.                                                                                      
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mSYNOPSIS[0m                                                                                                                                                    
+                                                                                                                                                              
+      [1mnebius compute disk create[0m                                                                                                                              
+        --block-size-bytes                                                                                                                                    
+        --disk-encryption-type                                                                                                                                
+        --forbid-deletion                                                                                                                                     
+        --labels                                                                                                                                              
+        --name                                                                                                                                                
+        --parent-id [3m[[0m[3mrequired][0m                                                                                                                                
+        --resource-version                                                                                                                                    
+        --size-bytes                                                                                                                                          
+        --size-gibibytes                                                                                                                                      
+        --size-kibibytes                                                                                                                                      
+        --size-mebibytes                                                                                                                                      
+        --source-image-family-image-family [3m[[0m[3mrequired][0m                                                                                                         
+        --source-image-family-parent-id                                                                                                                       
+        --source-image-id                                                                                                                                     
+        --type [3m[[0m[3mrequired][0m                                                                                                                                     
+        --async                                                                                                                                               
+        -i, --interactive                                                                                                                                     
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mOPTIONS[0m                                                                                                                                                     
+                                                                                                                                                              
+      [1m--block-size-bytes[0m (int64)                                                                                                                              
+         Block size in bytes.                                                                                                                                 
+         The block size must be a power of two between 4096 bytes (4 KiB) and 131072 bytes (128 KiB).                                                         
+         The default value is 4096 bytes (4 KiB).                                                                                                             
+                                                                                                                                                              
+      [1m--disk-encryption-type[0m (string)                                                                                                                         
+         A value must be one of:                                                                                                                              
+          • disk_encryption_unspecified                                                                                                                       
+          • disk_encryption_managed                                                                                                                           
+                                                                                                                                                              
+      [1m--forbid-deletion[0m (bool)                                                                                                                                
+         Prevents deletion whilst set.                                                                                                                        
+                                                                                                                                                              
+      [1m--labels[0m (string->string)                                                                                                                               
+         Labels associated with the resource.                                                                                                                 
+                                                                                                                                                              
+      [1m--name[0m (string)                                                                                                                                         
+         Human readable name for the resource.                                                                                                                
+                                                                                                                                                              
+      [1m--parent-id[0m (string) [3m[[0m[3mrequired][0m                                                                                                                         
+         Identifier of the parent resource to which the resource belongs.                                                                                     
+                                                                                                                                                              
+      [1m--resource-version[0m (int64)                                                                                                                              
+         Version of the resource for safe concurrent modifications and consistent reads.                                                                      
+         Positive and monotonically increases on each resource spec change (but [3mnot[0m on each change of the                                                     
+         resource's container(s) or status).                                                                                                                  
+         Service allows zero value or current.                                                                                                                
+                                                                                                                                                              
+      [1m--size-bytes[0m (int64)                                                                                                                                    
+         Mutually exclusive with: [3m--size-gibibytes[0m, [3m--size-kibibytes[0m, [3m--size-mebibytes[0m                                                                        
+                                                                                                                                                              
+      [1m--size-gibibytes[0m (int64)                                                                                                                                
+         Mutually exclusive with: [3m--size-bytes[0m, [3m--size-kibibytes[0m, [3m--size-mebibytes[0m                                                                            
+                                                                                                                                                              
+      [1m--size-kibibytes[0m (int64)                                                                                                                                
+         Mutually exclusive with: [3m--size-bytes[0m, [3m--size-gibibytes[0m, [3m--size-mebibytes[0m                                                                            
+                                                                                                                                                              
+      [1m--size-mebibytes[0m (int64)                                                                                                                                
+         Mutually exclusive with: [3m--size-bytes[0m, [3m--size-gibibytes[0m, [3m--size-kibibytes[0m                                                                            
+                                                                                                                                                              
+      [1m--source-image-family-image-family[0m (string) [3m[[0m[3mrequired][0m                                                                                                  
+         Mutually exclusive with: [3m--source-image-id[0m                                                                                                           
+                                                                                                                                                              
+      [1m--source-image-family-parent-id[0m (string)                                                                                                                
+         Mutually exclusive with: [3m--source-image-id[0m                                                                                                           
+                                                                                                                                                              
+      [1m--source-image-id[0m (string)                                                                                                                              
+         Mutually exclusive with: [3m--source-image-family-image-family[0m, [3m--source-image-family-parent-id[0m                                                         
+                                                                                                                                                              
+      [1m--type[0m (string) [3m[[0m[3mrequired][0m                                                                                                                              
+         The type of disk defines the performance and reliability characteristics of the block device.                                                        
+         For details, see [38;5;36;4mhttps://docs.nebius.com/compute/storage/types#disks-types[0m.                                                                          
+         A value must be one of:                                                                                                                              
+          • network_ssd                                                                                                                                       
+          • network_hdd                                                                                                                                       
+          • network_ssd_non_replicated                                                                                                                        
+          • network_ssd_io_m3                                                                                                                                 
+                                                                                                                                                              
+      [1m--async[0m (bool)                                                                                                                                          
+         If set, returns operation id. Otherwise, waits for the operation to complete and returns its resource.                                               
+                                                                                                                                                              
+      [1m-i, --interactive[0m (bool)                                                                                                                                
+         If set, suggests to insert field values in interactive mode.                                                                                         
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mGLOBAL[0m[1m OPTIONS[0m                                                                                                                                              
+                                                                                                                                                              
+      [1m-h, --help[0m (bool)                                                                                                                                       
+         Show this message.                                                                                                                                   
+                                                                                                                                                              
+      [1m-p, --profile[0m (string)                                                                                                                                  
+         Set a profile for interacting with the cloud.                                                                                                        
+                                                                                                                                                              
+      [1m--format[0m (string)                                                                                                                                       
+         Output format. Supported values: yaml|json|jsonpath|table|text.                                                                                      
+                                                                                                                                                              
+      [1m-f, --file[0m (string)                                                                                                                                     
+         Input file. For 'update' commands automatically set --full=true.                                                                                     
+                                                                                                                                                              
+      [1m-c, --config[0m (string)                                                                                                                                   
+         Provide path to config file.                                                                                                                         
+                                                                                                                                                              
+      [1m--debug[0m (bool)                                                                                                                                          
+         Enable debug logs.                                                                                                                                   
+                                                                                                                                                              
+      [1m--color[0m (bool)                                                                                                                                          
+         Enable colored output.                                                                                                                               
+                                                                                                                                                              
+      [1m--no-browser[0m (bool)                                                                                                                                     
+         Do not open browser automatically on auth.                                                                                                           
+                                                                                                                                                              
+      [1m--insecure[0m (bool)                                                                                                                                       
+         Disable transport security.                                                                                                                          
+                                                                                                                                                              
+      [1m--auth-timeout[0m (duration: 2h30m10s)                                                                                                                     
+         Set the timeout for the request including authentication process, default is 15m0s.                                                                  
+                                                                                                                                                              
+      [1m--per-retry-timeout[0m (duration: 2h30m10s)                                                                                                                
+         Set the timeout for each retry attempt, default is 20s.                                                                                              
+                                                                                                                                                              
+      [1m--retries[0m (uint)                                                                                                                                        
+         Set the number of retry attempts, 1 is disable retries, default is 3.                                                                                
+                                                                                                                                                              
+      [1m--timeout[0m (duration: 2h30m10s)                                                                                                                          
+         Set the timeout for the main request, default is 1m0s.                                                                                               
+                                                                                                                                                              
+      [1m--no-check-update[0m (bool)                                                                                                                                
+         Suppress check for updates.                                                                                                                          
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mINPUT[0m[1m SCHEMA[0m                                                                                                                                                
+                                                                                                                                                              
+  You can also provide a positional argument as a text in a json or yaml format which will be converted to the corresponding request structure.               
+                                                                                                                                                              
+  nebius compute disk create '                                                                                                                                
+  {                                                                                                                                                           
+    "metadata": {                                                                                                                                             
+      "labels": {                                                                                                                                             
+        "": ""                                                                                                                                                
+      },                                                                                                                                                      
+      "name": "",                                                                                                                                             
+      "parent_id": "",                                                                                                                                        
+      "resource_version": 0                                                                                                                                   
+    },                                                                                                                                                        
+    "spec": {                                                                                                                                                 
+      "block_size_bytes": 0,                                                                                                                                  
+      "disk_encryption": {                                                                                                                                    
+        "type": "disk_encryption_unspecified"|"disk_encryption_managed"                                                                                       
+      },                                                                                                                                                      
+      "forbid_deletion": false,                                                                                                                               
+      "size_bytes": 0,                                                                                                                                        
+      "source_image_family": {                                                                                                                                
+        "image_family": "",                                                                                                                                   
+        "parent_id": ""                                                                                                                                       
+      },                                                                                                                                                      
+      "type": "unspecified"|"network_ssd"|"network_hdd"|"network_ssd_non_replicated"|"network_ssd_io_m3"                                                      
+    }                                                                                                                                                         
+  }                                                                                                                                                           
+  '                                                                                                                                                           
+

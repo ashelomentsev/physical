@@ -1,0 +1,26 @@
+metadata:
+  parent_id: project-e00m4ajtpr00c13tx28trn
+  name: isaac-l40s-vm-manual
+spec:
+  resources:
+    platform: gpu-l40s-d
+    preset: 1gpu-16vcpu-96gb
+  boot_disk:
+    attach_mode: READ_WRITE
+    existing_disk:
+      id: computedisk-e00jr0n6cn1anwkq9j
+  network_interfaces:
+    - name: eth0
+      subnet_id: vpcsubnet-e00k3kyzyj4fhwr5z6
+      ip_address: {}
+      public_ip_address:
+        static: false
+      security_groups:
+        - id: vpcsecuritygroup-e00bw4t9bkg7hqasnt
+  cloud_init_user_data: |
+    users:
+     - name: splatica
+       sudo: ALL=(ALL) NOPASSWD:ALL
+       shell: /bin/bash
+       ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEet6o2KFYeSXXeA4zo5OX7ua65A1/1yIyRjhRJkAGqR

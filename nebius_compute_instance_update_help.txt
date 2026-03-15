@@ -1,0 +1,313 @@
+
+[1m[0m[1m[0m  [1mNAME[0m                                                                                                                                                        
+                                                                                                                                                              
+      [1mnebius compute instance update[0m                                                                                                                          
+        Updates an existing VM instance with new configuration parameters.                                                                                    
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mSYNOPSIS[0m                                                                                                                                                    
+                                                                                                                                                              
+      [1mnebius compute instance update [[0m[1mid][0m                                                                                                                     
+        --cloud-init-user-data                                                                                                                                
+        --filesystems                                                                                                                                         
+        --hostname                                                                                                                                            
+        --id                                                                                                                                                  
+        --labels                                                                                                                                              
+        --labels-add                                                                                                                                          
+        --labels-remove                                                                                                                                       
+        --name                                                                                                                                                
+        --network-interfaces                                                                                                                                  
+        --parent-id                                                                                                                                           
+        --reservation-policy-policy                                                                                                                           
+        --reservation-policy-reservation-ids                                                                                                                  
+        --resource-version                                                                                                                                    
+        --resources-preset                                                                                                                                    
+        --secondary-disks                                                                                                                                     
+        --stopped                                                                                                                                             
+        --async                                                                                                                                               
+        --clear-mask                                                                                                                                          
+        --diff                                                                                                                                                
+        --full                                                                                                                                                
+        --patch                                                                                                                                               
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mPOSITIONAL[0m[1m ARGUMENTS[0m                                                                                                                                        
+                                                                                                                                                              
+      [1mid[0m                                                                                                                                                      
+        Identifier for the resource, unique for its resource type.                                                                                            
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mOPTIONS[0m                                                                                                                                                     
+                                                                                                                                                              
+      [1m--cloud-init-user-data[0m (string)                                                                                                                         
+         Data in cloud-init format for customizing instance initialization.                                                                                   
+         For details, see [38;5;36;4mhttps://docs.nebius.com/compute/virtual-machines/manage#user-data[0m.                                                                  
+                                                                                                                                                              
+      [1m--filesystems[0m (json)                                                                                                                                    
+         List of Shared Filesystems attached to the instance.                                                                                                 
+                                                                                                                                                              
+         (structure)                                                                                                                                          
+                                                                                                                                                              
+           [1mattach_[0m[1mmode[0m -> (string) [3m[[0m[3mrequired][0m                                                                                                                 
+             A value must be one of:                                                                                                                          
+              • "unspecified"                                                                                                                                 
+              • "read_only"                                                                                                                                   
+              • "read_write"                                                                                                                                  
+                                                                                                                                                              
+           [1mexisting_[0m[1mfilesystem[0m -> (structure)                                                                                                                 
+                                                                                                                                                              
+             [1mid[0m -> (string) [3m[[0m[3mrequired][0m                                                                                                                        
+                                                                                                                                                              
+           [1mmount_[0m[1mtag[0m -> (string) [3m[[0m[3mrequired][0m                                                                                                                   
+             Specifies the user-defined identifier, allowing to use it as a device in mount command.                                                          
+                                                                                                                                                              
+         (schema)                                                                                                                                             
+                                                                                                                                                              
+         [{                                                                                                                                                   
+           "attach_mode": "unspecified"|"read_only"|"read_write",                                                                                             
+           "existing_filesystem": {                                                                                                                           
+             "id": ""                                                                                                                                         
+           },                                                                                                                                                 
+           "mount_tag": ""                                                                                                                                    
+         }]                                                                                                                                                   
+                                                                                                                                                              
+      [1m--hostname[0m (string)                                                                                                                                     
+         Instance's hostname. Used to generate default DNS record in format <hostname>.<network_id>.compute.internal.                                         
+         or <instance_id>.<network_id>.compute.internal. if hostname is not specified.                                                                        
+                                                                                                                                                              
+      [1m--id[0m (string)                                                                                                                                           
+         Identifier for the resource, unique for its resource type.                                                                                           
+                                                                                                                                                              
+      [1m--labels[0m (string->string)                                                                                                                               
+         Labels associated with the resource.                                                                                                                 
+                                                                                                                                                              
+      [1m--labels-add[0m (string->string)                                                                                                                           
+         Add values to Labels associated with the resource.                                                                                                   
+                                                                                                                                                              
+      [1m--labels-remove[0m (string array)                                                                                                                          
+         Remove values from Labels associated with the resource.                                                                                              
+                                                                                                                                                              
+      [1m--name[0m (string)                                                                                                                                         
+         Human readable name for the resource.                                                                                                                
+                                                                                                                                                              
+      [1m--network-interfaces[0m (json)                                                                                                                             
+         List of network interfaces attached to the instance.                                                                                                 
+                                                                                                                                                              
+         (structure)                                                                                                                                          
+                                                                                                                                                              
+           [1maliases[0m -> (structure)                                                                                                                             
+             Assign ranges of IP addresses as aliases.                                                                                                        
+                                                                                                                                                              
+             [1mallocation_[0m[1mid[0m -> (string) [3m[[0m[3mrequired][0m                                                                                                             
+               ID of allocation.                                                                                                                              
+                                                                                                                                                              
+           [1mpublic_[0m[1mip_[0m[1maddress[0m -> (structure) [3m[[0m[3mmeaningful_[0m[3mempty_[0m[3mvalue][0m                                                                                          
+             Public IPv4 address associated with the interface.                                                                                               
+                                                                                                                                                              
+             [1mallocation_[0m[1mid[0m -> (string)                                                                                                                        
+               Allocation identifier if it was created before.                                                                                                
+                                                                                                                                                              
+             [1mstatic[0m -> (bool)                                                                                                                                 
+               If false - Allocation will be created/deleted during NetworkInterface.Allocate/NetworkInterface.Deallocate                                     
+               If true  - Allocation will be created/deleted during NetworkInterface.Create/NetworkInterface.Delete                                           
+               False by default.                                                                                                                              
+                                                                                                                                                              
+           [1msecurity_[0m[1mgroups[0m -> (structure)                                                                                                                     
+             Security groups associated with the network interface.                                                                                           
+             If an empty list is provided, the default security group for the network will be used.                                                           
+             Effective security groups can be seen in the status.                                                                                             
+                                                                                                                                                              
+             [1mid[0m -> (string)                                                                                                                                   
+               Security group identifier.                                                                                                                     
+                                                                                                                                                              
+         (schema)                                                                                                                                             
+                                                                                                                                                              
+         [{                                                                                                                                                   
+           "aliases": [{                                                                                                                                      
+             "allocation_id": ""                                                                                                                              
+           }],                                                                                                                                                
+           "public_ip_address": {                                                                                                                             
+             "allocation_id": "",                                                                                                                             
+             "static": false                                                                                                                                  
+           },                                                                                                                                                 
+           "security_groups": [{                                                                                                                              
+             "id": ""                                                                                                                                         
+           }]                                                                                                                                                 
+         }]                                                                                                                                                   
+                                                                                                                                                              
+      [1m--parent-id[0m (string)                                                                                                                                    
+         Identifier of the parent resource to which the resource belongs.                                                                                     
+                                                                                                                                                              
+      [1m--reservation-policy-policy[0m (string)                                                                                                                    
+         A value must be one of:                                                                                                                              
+          • auto                                                                                                                                              
+          • forbid                                                                                                                                            
+          • strict                                                                                                                                            
+                                                                                                                                                              
+      [1m--reservation-policy-reservation-ids[0m (string array)                                                                                                     
+         Capacity block groups, order matters.                                                                                                                
+                                                                                                                                                              
+      [1m--resource-version[0m (int64)                                                                                                                              
+         Version of the resource for safe concurrent modifications and consistent reads.                                                                      
+         Positive and monotonically increases on each resource spec change (but [3mnot[0m on each change of the                                                     
+         resource's container(s) or status).                                                                                                                  
+         Service allows zero value or current.                                                                                                                
+                                                                                                                                                              
+      [1m--resources-preset[0m (string)                                                                                                                             
+                                                                                                                                                              
+      [1m--secondary-disks[0m (json)                                                                                                                                
+         List of additional data disks attached to the instance beyond the boot disk.                                                                         
+                                                                                                                                                              
+         (structure)                                                                                                                                          
+                                                                                                                                                              
+           [1mattach_[0m[1mmode[0m -> (string) [3m[[0m[3mrequired][0m                                                                                                                 
+             A value must be one of:                                                                                                                          
+              • "unspecified"                                                                                                                                 
+              • "read_only"                                                                                                                                   
+              • "read_write"                                                                                                                                  
+                                                                                                                                                              
+           [1mdevice_[0m[1mid[0m -> (string)                                                                                                                              
+             Specifies the user-defined identifier, allowing to use '/dev/disk/by-id/virtio-{device_id}' as a device path in mount command.                   
+                                                                                                                                                              
+           [1mexisting_[0m[1mdisk[0m -> (structure)                                                                                                                       
+             Attach an existing disk.                                                                                                                         
+                                                                                                                                                              
+             Lifecycle:                                                                                                                                       
+             - The disk is preserved when the instance is deleted (it will be detached).                                                                      
+                                                                                                                                                              
+             Switching to a managed disk:                                                                                                                     
+             - To delete the disk together with the instance, switch to ManagedDisk in the instance spec.                                                     
+             - For the switch, ManagedDisk.name MUST match the current disk name                                                                              
+               (see DiskService.Get for the disk referenced by ExistingDisk.id).                                                                              
+             - When converting an ExistingDisk to a ManagedDisk, you must provide ManagedDisk.name and ManagedDisk.spec                                       
+               exactly as they are currently defined in the disk resource.                                                                                    
+               Obtain the current values via DiskService.Get and copy them verbatim.                                                                          
+               If ManagedDisk.spec differs from the current disk spec, the instance update will fail.                                                         
+                                                                                                                                                              
+             [1mid[0m -> (string) [3m[[0m[3mrequired][0m                                                                                                                        
+                                                                                                                                                              
+         (schema)                                                                                                                                             
+                                                                                                                                                              
+         [{                                                                                                                                                   
+           "attach_mode": "unspecified"|"read_only"|"read_write",                                                                                             
+           "device_id": "",                                                                                                                                   
+           "existing_disk": {                                                                                                                                 
+             "id": ""                                                                                                                                         
+           }                                                                                                                                                  
+         }]                                                                                                                                                   
+                                                                                                                                                              
+      [1m--stopped[0m (bool)                                                                                                                                        
+         Indicates whether the instance should be stopped.                                                                                                    
+                                                                                                                                                              
+      [1m--async[0m (bool)                                                                                                                                          
+         If set, returns operation id. Otherwise, waits for the operation to complete and returns its resource.                                               
+                                                                                                                                                              
+      [1m--clear-mask[0m (string array)                                                                                                                             
+         Reset-mask field paths to clear in patch mode. Can be repeated.                                                                                      
+                                                                                                                                                              
+      [1m--diff[0m (bool)                                                                                                                                           
+         Show diff of resource before commiting update.                                                                                                       
+                                                                                                                                                              
+      [1m--full[0m (bool)                                                                                                                                           
+         Update full resource state. Automatically set to true if the --file or argument provided.                                                            
+                                                                                                                                                              
+      [1m--patch[0m (bool)                                                                                                                                          
+         Update only specified fields.                                                                                                                        
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mGLOBAL[0m[1m OPTIONS[0m                                                                                                                                              
+                                                                                                                                                              
+      [1m-h, --help[0m (bool)                                                                                                                                       
+         Show this message.                                                                                                                                   
+                                                                                                                                                              
+      [1m-p, --profile[0m (string)                                                                                                                                  
+         Set a profile for interacting with the cloud.                                                                                                        
+                                                                                                                                                              
+      [1m--format[0m (string)                                                                                                                                       
+         Output format. Supported values: yaml|json|jsonpath|table|text.                                                                                      
+                                                                                                                                                              
+      [1m-f, --file[0m (string)                                                                                                                                     
+         Input file. For 'update' commands automatically set --full=true.                                                                                     
+                                                                                                                                                              
+      [1m-c, --config[0m (string)                                                                                                                                   
+         Provide path to config file.                                                                                                                         
+                                                                                                                                                              
+      [1m--debug[0m (bool)                                                                                                                                          
+         Enable debug logs.                                                                                                                                   
+                                                                                                                                                              
+      [1m--color[0m (bool)                                                                                                                                          
+         Enable colored output.                                                                                                                               
+                                                                                                                                                              
+      [1m--no-browser[0m (bool)                                                                                                                                     
+         Do not open browser automatically on auth.                                                                                                           
+                                                                                                                                                              
+      [1m--insecure[0m (bool)                                                                                                                                       
+         Disable transport security.                                                                                                                          
+                                                                                                                                                              
+      [1m--auth-timeout[0m (duration: 2h30m10s)                                                                                                                     
+         Set the timeout for the request including authentication process, default is 15m0s.                                                                  
+                                                                                                                                                              
+      [1m--per-retry-timeout[0m (duration: 2h30m10s)                                                                                                                
+         Set the timeout for each retry attempt, default is 20s.                                                                                              
+                                                                                                                                                              
+      [1m--retries[0m (uint)                                                                                                                                        
+         Set the number of retry attempts, 1 is disable retries, default is 3.                                                                                
+                                                                                                                                                              
+      [1m--timeout[0m (duration: 2h30m10s)                                                                                                                          
+         Set the timeout for the main request, default is 1m0s.                                                                                               
+                                                                                                                                                              
+      [1m--no-check-update[0m (bool)                                                                                                                                
+         Suppress check for updates.                                                                                                                          
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mINPUT[0m[1m SCHEMA[0m                                                                                                                                                
+                                                                                                                                                              
+  You can also provide a positional argument as a text in a json or yaml format which will be converted to the corresponding request structure.               
+                                                                                                                                                              
+  nebius compute instance update '                                                                                                                            
+  {                                                                                                                                                           
+    "metadata": {                                                                                                                                             
+      "id": "",                                                                                                                                               
+      "labels": {                                                                                                                                             
+        "": ""                                                                                                                                                
+      },                                                                                                                                                      
+      "name": "",                                                                                                                                             
+      "parent_id": "",                                                                                                                                        
+      "resource_version": 0                                                                                                                                   
+    },                                                                                                                                                        
+    "spec": {                                                                                                                                                 
+      "cloud_init_user_data": "",                                                                                                                             
+      "filesystems": [{                                                                                                                                       
+        "attach_mode": "unspecified"|"read_only"|"read_write",                                                                                                
+        "existing_filesystem": {                                                                                                                              
+          "id": ""                                                                                                                                            
+        },                                                                                                                                                    
+        "mount_tag": ""                                                                                                                                       
+      }],                                                                                                                                                     
+      "hostname": "",                                                                                                                                         
+      "network_interfaces": [{                                                                                                                                
+        "aliases": [{                                                                                                                                         
+          "allocation_id": ""                                                                                                                                 
+        }],                                                                                                                                                   
+        "public_ip_address": {                                                                                                                                
+          "allocation_id": "",                                                                                                                                
+          "static": false                                                                                                                                     
+        },                                                                                                                                                    
+        "security_groups": [{                                                                                                                                 
+          "id": ""                                                                                                                                            
+        }]                                                                                                                                                    
+      }],                                                                                                                                                     
+      "reservation_policy": {                                                                                                                                 
+        "policy": "auto"|"forbid"|"strict",                                                                                                                   
+        "reservation_ids": [""]                                                                                                                               
+      },                                                                                                                                                      
+      "resources": {                                                                                                                                          
+        "preset": ""                                                                                                                                          
+      },                                                                                                                                                      
+      "secondary_disks": [{                                                                                                                                   
+        "attach_mode": "unspecified"|"read_only"|"read_write",                                                                                                
+        "device_id": "",                                                                                                                                      
+        "existing_disk": {                                                                                                                                    
+          "id": ""                                                                                                                                            
+        }                                                                                                                                                     
+      }],                                                                                                                                                     
+      "stopped": false                                                                                                                                        
+    }                                                                                                                                                         
+  }                                                                                                                                                           
+  '                                                                                                                                                           
+

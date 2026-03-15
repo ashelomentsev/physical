@@ -1,0 +1,19 @@
+metadata:
+  id: computedisk-e00jr0n6cn1anwkq9j
+  parent_id: project-e00m4ajtpr00c13tx28trn
+  name: isaac-l40s-disk-1773607768
+  resource_version: "1"
+  created_at: "2026-03-15T20:49:29.483443Z"
+spec:
+  size_gibibytes: "300"
+  type: NETWORK_SSD
+  source_image_id: computeimage-e00hd56gzjbavd3h4j
+  disk_encryption: {}
+status:
+  state: READY
+  source_image_id: computeimage-e00hd56gzjbavd3h4j
+  size_bytes: "322122547200"
+  block_size_bytes: "4096"
+  source_image_cpu_architecture: AMD64
+  lock_state: {}
+
