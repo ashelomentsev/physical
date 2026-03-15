@@ -1,0 +1,189 @@
+
+[1m[0m[1m[0m  [1mNAME[0m                                                                                                                                                        
+                                                                                                                                                              
+      [1mnebius vpc security-rule create[0m                                                                                                                         
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mSYNOPSIS[0m                                                                                                                                                    
+                                                                                                                                                              
+      [1mnebius vpc security-rule create[0m                                                                                                                         
+        --access [3m[[0m[3mrequired][0m                                                                                                                                   
+        --egress-destination-cidrs                                                                                                                            
+        --egress-destination-ports                                                                                                                            
+        --egress-destination-security-group-id                                                                                                                
+        --ingress-destination-ports                                                                                                                           
+        --ingress-source-cidrs                                                                                                                                
+        --ingress-source-security-group-id                                                                                                                    
+        --labels                                                                                                                                              
+        --name                                                                                                                                                
+        --parent-id [3m[[0m[3mrequired][0m                                                                                                                                
+        --priority                                                                                                                                            
+        --protocol [3m[[0m[3mrequired][0m                                                                                                                                 
+        --resource-version                                                                                                                                    
+        --type                                                                                                                                                
+        --async                                                                                                                                               
+        -i, --interactive                                                                                                                                     
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mOPTIONS[0m                                                                                                                                                     
+                                                                                                                                                              
+      [1m--access[0m (string) [3m[[0m[3mrequired][0m                                                                                                                            
+         Access action for the rule.                                                                                                                          
+         Required. Determines whether matching traffic is allowed or denied.                                                                                  
+         A value must be one of:                                                                                                                              
+          • allow                                                                                                                                             
+          • deny                                                                                                                                              
+                                                                                                                                                              
+      [1m--egress-destination-cidrs[0m (string array)                                                                                                               
+         CIDR blocks as the destination.                                                                                                                      
+         Optional. Empty list means any address.                                                                                                              
+         Must be a valid IPv4.                                                                                                                                
+         Maximum of 8 CIDRs can be specified.                                                                                                                 
+         Mutually exclusive with: [3m--ingress-destination-ports[0m, [3m--ingress-source-cidrs[0m, [3m--ingress-source-security-group-id[0m                                     
+                                                                                                                                                              
+      [1m--egress-destination-ports[0m (int32 array)                                                                                                                
+         List of ports to which the rule applies.                                                                                                             
+         Optional. Empty list means any port.                                                                                                                 
+         Valid range: 1–65535.                                                                                                                                
+         Maximum of 8 ports can be specified.                                                                                                                 
+         Mutually exclusive with: [3m--ingress-destination-ports[0m, [3m--ingress-source-cidrs[0m, [3m--ingress-source-security-group-id[0m                                     
+                                                                                                                                                              
+      [1m--egress-destination-security-group-id[0m (string)                                                                                                         
+         ID of the referenced Security Group as the destination.                                                                                              
+         Mutually exclusive with: [3m--ingress-destination-ports[0m, [3m--ingress-source-cidrs[0m, [3m--ingress-source-security-group-id[0m                                     
+                                                                                                                                                              
+      [1m--ingress-destination-ports[0m (int32 array)                                                                                                               
+         List of destination ports to which the rule applies.                                                                                                 
+         Optional. Empty list means any port.                                                                                                                 
+         Valid range: 1–65535.                                                                                                                                
+         Maximum of 8 ports can be specified.                                                                                                                 
+         Mutually exclusive with: [3m--egress-destination-cidrs[0m, [3m--egress-destination-ports[0m, [3m--egress-destination-security-group-id[0m                              
+                                                                                                                                                              
+      [1m--ingress-source-cidrs[0m (string array)                                                                                                                   
+         CIDR blocks as the source.                                                                                                                           
+         Optional. Empty list means any address.                                                                                                              
+         Must be a valid IPv4                                                                                                                                 
+         Maximum of 8 CIDRs can be specified.                                                                                                                 
+         Mutually exclusive with: [3m--egress-destination-cidrs[0m, [3m--egress-destination-ports[0m, [3m--egress-destination-security-group-id[0m                              
+                                                                                                                                                              
+      [1m--ingress-source-security-group-id[0m (string)                                                                                                             
+         ID of the referenced Security Group as the source.                                                                                                   
+         Mutually exclusive with: [3m--egress-destination-cidrs[0m, [3m--egress-destination-ports[0m, [3m--egress-destination-security-group-id[0m                              
+                                                                                                                                                              
+      [1m--labels[0m (string->string)                                                                                                                               
+         Labels associated with the resource.                                                                                                                 
+                                                                                                                                                              
+      [1m--name[0m (string)                                                                                                                                         
+         Human readable name for the resource.                                                                                                                
+                                                                                                                                                              
+      [1m--parent-id[0m (string) [3m[[0m[3mrequired][0m                                                                                                                         
+         Identifier of the parent resource to which the resource belongs.                                                                                     
+                                                                                                                                                              
+      [1m--priority[0m (int32)                                                                                                                                      
+         Priority of the rule. Valid range: 0-1000.                                                                                                           
+         Optional. If not specified or set to 0, defaults to 500.                                                                                             
+         Rules are evaluated in priority order (lower numbers first) using a first-match algorithm:                                                           
+         only the first matching rule takes effect (ALLOW or DENY), and subsequent rules are skipped.                                                         
+                                                                                                                                                              
+         When multiple rules share the same priority, DENY rules are evaluated before ALLOW rules.                                                            
+         The final evaluation order is reflected in 'effective_priority' (see SecurityRuleStatus).                                                            
+                                                                                                                                                              
+      [1m--protocol[0m (string) [3m[[0m[3mrequired][0m                                                                                                                          
+         Protocol used in the rule.                                                                                                                           
+         Supported values: ANY, TCP, UDP, ICMP.                                                                                                               
+         A value must be one of:                                                                                                                              
+          • any                                                                                                                                               
+          • tcp                                                                                                                                               
+          • udp                                                                                                                                               
+          • icmp                                                                                                                                              
+                                                                                                                                                              
+      [1m--resource-version[0m (int64)                                                                                                                              
+         Version of the resource for safe concurrent modifications and consistent reads.                                                                      
+         Positive and monotonically increases on each resource spec change (but [3mnot[0m on each change of the                                                     
+         resource's container(s) or status).                                                                                                                  
+         Service allows zero value or current.                                                                                                                
+                                                                                                                                                              
+      [1m--type[0m (string)                                                                                                                                         
+         Type of the rule (STATEFUL or STATELESS)                                                                                                             
+         Default value is STATEFUL.                                                                                                                           
+         A value must be one of:                                                                                                                              
+          • rule_type_unspecified                                                                                                                             
+          • stateful                                                                                                                                          
+          • stateless                                                                                                                                         
+                                                                                                                                                              
+      [1m--async[0m (bool)                                                                                                                                          
+         If set, returns operation id. Otherwise, waits for the operation to complete and returns its resource.                                               
+                                                                                                                                                              
+      [1m-i, --interactive[0m (bool)                                                                                                                                
+         If set, suggests to insert field values in interactive mode.                                                                                         
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mGLOBAL[0m[1m OPTIONS[0m                                                                                                                                              
+                                                                                                                                                              
+      [1m-h, --help[0m (bool)                                                                                                                                       
+         Show this message.                                                                                                                                   
+                                                                                                                                                              
+      [1m-p, --profile[0m (string)                                                                                                                                  
+         Set a profile for interacting with the cloud.                                                                                                        
+                                                                                                                                                              
+      [1m--format[0m (string)                                                                                                                                       
+         Output format. Supported values: yaml|json|jsonpath|table|text.                                                                                      
+                                                                                                                                                              
+      [1m-f, --file[0m (string)                                                                                                                                     
+         Input file. For 'update' commands automatically set --full=true.                                                                                     
+                                                                                                                                                              
+      [1m-c, --config[0m (string)                                                                                                                                   
+         Provide path to config file.                                                                                                                         
+                                                                                                                                                              
+      [1m--debug[0m (bool)                                                                                                                                          
+         Enable debug logs.                                                                                                                                   
+                                                                                                                                                              
+      [1m--color[0m (bool)                                                                                                                                          
+         Enable colored output.                                                                                                                               
+                                                                                                                                                              
+      [1m--no-browser[0m (bool)                                                                                                                                     
+         Do not open browser automatically on auth.                                                                                                           
+                                                                                                                                                              
+      [1m--insecure[0m (bool)                                                                                                                                       
+         Disable transport security.                                                                                                                          
+                                                                                                                                                              
+      [1m--auth-timeout[0m (duration: 2h30m10s)                                                                                                                     
+         Set the timeout for the request including authentication process, default is 15m0s.                                                                  
+                                                                                                                                                              
+      [1m--per-retry-timeout[0m (duration: 2h30m10s)                                                                                                                
+         Set the timeout for each retry attempt, default is 20s.                                                                                              
+                                                                                                                                                              
+      [1m--retries[0m (uint)                                                                                                                                        
+         Set the number of retry attempts, 1 is disable retries, default is 3.                                                                                
+                                                                                                                                                              
+      [1m--timeout[0m (duration: 2h30m10s)                                                                                                                          
+         Set the timeout for the main request, default is 1m0s.                                                                                               
+                                                                                                                                                              
+      [1m--no-check-update[0m (bool)                                                                                                                                
+         Suppress check for updates.                                                                                                                          
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mINPUT[0m[1m SCHEMA[0m                                                                                                                                                
+                                                                                                                                                              
+  You can also provide a positional argument as a text in a json or yaml format which will be converted to the corresponding request structure.               
+                                                                                                                                                              
+  nebius vpc security-rule create '                                                                                                                           
+  {                                                                                                                                                           
+    "metadata": {                                                                                                                                             
+      "labels": {                                                                                                                                             
+        "": ""                                                                                                                                                
+      },                                                                                                                                                      
+      "name": "",                                                                                                                                             
+      "parent_id": "",                                                                                                                                        
+      "resource_version": 0                                                                                                                                   
+    },                                                                                                                                                        
+    "spec": {                                                                                                                                                 
+      "access": "access_unspecified"|"allow"|"deny"              ,                                                                                            
+      "egress": {                                                                                                                                             
+        "destination_cidrs": [""],                                                                                                                            
+        "destination_ports": [0],                                                                                                                             
+        "destination_security_group_id": ""                                                                                                                   
+      },                                                                                                                                                      
+      "priority": 0,                                                                                                                                          
+      "protocol": "protocol_unspecified"|"any"|"tcp"|"udp"|"icmp",                                                                                            
+      "type": "rule_type_unspecified"|"stateful"|"stateless"                                                                                                  
+    }                                                                                                                                                         
+  }                                                                                                                                                           
+  '                                                                                                                                                           
+

@@ -1,0 +1,131 @@
+
+[1m[0m[1m[0m  [1mNAME[0m                                                                                                                                                        
+                                                                                                                                                              
+      [1mnebius vpc security-group update[0m                                                                                                                        
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mSYNOPSIS[0m                                                                                                                                                    
+                                                                                                                                                              
+      [1mnebius vpc security-group update [[0m[1mid][0m                                                                                                                   
+        --id                                                                                                                                                  
+        --labels                                                                                                                                              
+        --labels-add                                                                                                                                          
+        --labels-remove                                                                                                                                       
+        --name                                                                                                                                                
+        --parent-id                                                                                                                                           
+        --resource-version                                                                                                                                    
+        --async                                                                                                                                               
+        --clear-mask                                                                                                                                          
+        --diff                                                                                                                                                
+        --full                                                                                                                                                
+        --patch                                                                                                                                               
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mPOSITIONAL[0m[1m ARGUMENTS[0m                                                                                                                                        
+                                                                                                                                                              
+      [1mid[0m                                                                                                                                                      
+        Identifier for the resource, unique for its resource type.                                                                                            
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mOPTIONS[0m                                                                                                                                                     
+                                                                                                                                                              
+      [1m--id[0m (string)                                                                                                                                           
+         Identifier for the resource, unique for its resource type.                                                                                           
+                                                                                                                                                              
+      [1m--labels[0m (string->string)                                                                                                                               
+         Labels associated with the resource.                                                                                                                 
+                                                                                                                                                              
+      [1m--labels-add[0m (string->string)                                                                                                                           
+         Add values to Labels associated with the resource.                                                                                                   
+                                                                                                                                                              
+      [1m--labels-remove[0m (string array)                                                                                                                          
+         Remove values from Labels associated with the resource.                                                                                              
+                                                                                                                                                              
+      [1m--name[0m (string)                                                                                                                                         
+         Human readable name for the resource.                                                                                                                
+                                                                                                                                                              
+      [1m--parent-id[0m (string)                                                                                                                                    
+         Identifier of the parent resource to which the resource belongs.                                                                                     
+                                                                                                                                                              
+      [1m--resource-version[0m (int64)                                                                                                                              
+         Version of the resource for safe concurrent modifications and consistent reads.                                                                      
+         Positive and monotonically increases on each resource spec change (but [3mnot[0m on each change of the                                                     
+         resource's container(s) or status).                                                                                                                  
+         Service allows zero value or current.                                                                                                                
+                                                                                                                                                              
+      [1m--async[0m (bool)                                                                                                                                          
+         If set, returns operation id. Otherwise, waits for the operation to complete and returns its resource.                                               
+                                                                                                                                                              
+      [1m--clear-mask[0m (string array)                                                                                                                             
+         Reset-mask field paths to clear in patch mode. Can be repeated.                                                                                      
+                                                                                                                                                              
+      [1m--diff[0m (bool)                                                                                                                                           
+         Show diff of resource before commiting update.                                                                                                       
+                                                                                                                                                              
+      [1m--full[0m (bool)                                                                                                                                           
+         Update full resource state. Automatically set to true if the --file or argument provided.                                                            
+                                                                                                                                                              
+      [1m--patch[0m (bool)                                                                                                                                          
+         Update only specified fields.                                                                                                                        
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mGLOBAL[0m[1m OPTIONS[0m                                                                                                                                              
+                                                                                                                                                              
+      [1m-h, --help[0m (bool)                                                                                                                                       
+         Show this message.                                                                                                                                   
+                                                                                                                                                              
+      [1m-p, --profile[0m (string)                                                                                                                                  
+         Set a profile for interacting with the cloud.                                                                                                        
+                                                                                                                                                              
+      [1m--format[0m (string)                                                                                                                                       
+         Output format. Supported values: yaml|json|jsonpath|table|text.                                                                                      
+                                                                                                                                                              
+      [1m-f, --file[0m (string)                                                                                                                                     
+         Input file. For 'update' commands automatically set --full=true.                                                                                     
+                                                                                                                                                              
+      [1m-c, --config[0m (string)                                                                                                                                   
+         Provide path to config file.                                                                                                                         
+                                                                                                                                                              
+      [1m--debug[0m (bool)                                                                                                                                          
+         Enable debug logs.                                                                                                                                   
+                                                                                                                                                              
+      [1m--color[0m (bool)                                                                                                                                          
+         Enable colored output.                                                                                                                               
+                                                                                                                                                              
+      [1m--no-browser[0m (bool)                                                                                                                                     
+         Do not open browser automatically on auth.                                                                                                           
+                                                                                                                                                              
+      [1m--insecure[0m (bool)                                                                                                                                       
+         Disable transport security.                                                                                                                          
+                                                                                                                                                              
+      [1m--auth-timeout[0m (duration: 2h30m10s)                                                                                                                     
+         Set the timeout for the request including authentication process, default is 15m0s.                                                                  
+                                                                                                                                                              
+      [1m--per-retry-timeout[0m (duration: 2h30m10s)                                                                                                                
+         Set the timeout for each retry attempt, default is 20s.                                                                                              
+                                                                                                                                                              
+      [1m--retries[0m (uint)                                                                                                                                        
+         Set the number of retry attempts, 1 is disable retries, default is 3.                                                                                
+                                                                                                                                                              
+      [1m--timeout[0m (duration: 2h30m10s)                                                                                                                          
+         Set the timeout for the main request, default is 1m0s.                                                                                               
+                                                                                                                                                              
+      [1m--no-check-update[0m (bool)                                                                                                                                
+         Suppress check for updates.                                                                                                                          
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mINPUT[0m[1m SCHEMA[0m                                                                                                                                                
+                                                                                                                                                              
+  You can also provide a positional argument as a text in a json or yaml format which will be converted to the corresponding request structure.               
+                                                                                                                                                              
+  nebius vpc security-group update '                                                                                                                          
+  {                                                                                                                                                           
+    "metadata": {                                                                                                                                             
+      "id": "",                                                                                                                                               
+      "labels": {                                                                                                                                             
+        "": ""                                                                                                                                                
+      },                                                                                                                                                      
+      "name": "",                                                                                                                                             
+      "parent_id": "",                                                                                                                                        
+      "resource_version": 0                                                                                                                                   
+    },                                                                                                                                                        
+    "spec": {                                                                                                                                                 
+    }                                                                                                                                                         
+  }                                                                                                                                                           
+  '                                                                                                                                                           
+

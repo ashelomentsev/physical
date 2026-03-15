@@ -1,0 +1,136 @@
+
+[1m[0m[1m[0m  [1mNAME[0m                                                                                                                                                        
+                                                                                                                                                              
+      [1mnebius ai job create[0m                                                                                                                                    
+        Creates a job.                                                                                                                                        
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mSYNOPSIS[0m                                                                                                                                                    
+                                                                                                                                                              
+      [1mnebius ai job create[0m                                                                                                                                    
+        --args                                                                                                                                                
+        --container-command                                                                                                                                   
+        --container-port                                                                                                                                      
+        --disk-size                                                                                                                                           
+        --env                                                                                                                                                 
+        --image                                                                                                                                               
+        --name                                                                                                                                                
+        --parent-id                                                                                                                                           
+        --platform                                                                                                                                            
+        --preemptible                                                                                                                                         
+        --preset                                                                                                                                              
+        --registry-password                                                                                                                                   
+        --registry-username                                                                                                                                   
+        --restart-policy                                                                                                                                      
+        --shm-size                                                                                                                                            
+        --ssh-key                                                                                                                                             
+        --subnet-id                                                                                                                                           
+        --timeout                                                                                                                                             
+        --volume                                                                                                                                              
+        --working-dir                                                                                                                                         
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mOPTIONS[0m                                                                                                                                                     
+                                                                                                                                                              
+      [1m--args[0m (string)                                                                                                                                         
+         Override container arguments.                                                                                                                        
+                                                                                                                                                              
+      [1m--container-command[0m (string)                                                                                                                            
+         Override container entrypoint command.                                                                                                               
+                                                                                                                                                              
+      [1m--container-port[0m (string array)                                                                                                                         
+         Container port to expose.                                                                                                                            
+                                                                                                                                                              
+      [1m--disk-size[0m (string)                                                                                                                                    
+         Disk size (e.g., 100Gi, 500Gi, 1Ti), default is 250Gi.                                                                                               
+                                                                                                                                                              
+      [1m--env[0m (string array)                                                                                                                                    
+         Environment variable in KEY=VALUE format (repeatable).                                                                                               
+                                                                                                                                                              
+      [1m--image[0m (string)                                                                                                                                        
+         Container image (format: image:tag).                                                                                                                 
+                                                                                                                                                              
+      [1m--name[0m (string)                                                                                                                                         
+         Application name.                                                                                                                                    
+                                                                                                                                                              
+      [1m--parent-id[0m (string)                                                                                                                                    
+         Parent ID (if not specified, it will be taken from the CLI profile).                                                                                 
+                                                                                                                                                              
+      [1m--platform[0m (string)                                                                                                                                     
+         Platform of compute resources (e.g. gpu-h100-sxm, gpu-l40s-d), default is gpu-h100-sxm in eu-north1 and gpu-h200-sxm elsewhere.                      
+                                                                                                                                                              
+      [1m--preemptible[0m (bool)                                                                                                                                    
+         Use a preemptible VM (cheaper but can be stopped by the platform at any time).                                                                       
+                                                                                                                                                              
+      [1m--preset[0m (string)                                                                                                                                       
+         Preset for selected platform (e.g. 1gpu-16vcpu-200gb), default is minimum available preset for the platform.                                         
+                                                                                                                                                              
+      [1m--registry-password[0m (string)                                                                                                                            
+         Container registry password.                                                                                                                         
+                                                                                                                                                              
+      [1m--registry-username[0m (string)                                                                                                                            
+         Container registry username.                                                                                                                         
+                                                                                                                                                              
+      [1m--restart-policy[0m (string)                                                                                                                               
+         Restart policy, default is never.                                                                                                                    
+         A value must be one of:                                                                                                                              
+          • never                                                                                                                                             
+          • on-failure                                                                                                                                        
+                                                                                                                                                              
+      [1m--shm-size[0m (string)                                                                                                                                     
+         Size of /dev/shm (e.g., 64Mi, 128Mi, 1Gi), default - 16Gi for GPU platforms, 0 for CPU.                                                              
+                                                                                                                                                              
+      [1m--ssh-key[0m (string array)                                                                                                                                
+         Configure ssh_authorized_keys for creating VM.                                                                                                       
+                                                                                                                                                              
+      [1m--subnet-id[0m (string)                                                                                                                                    
+         Network subnet ID.                                                                                                                                   
+                                                                                                                                                              
+      [1m--timeout[0m (duration: 2h30m10s)                                                                                                                          
+         Job timeout in hours (min - 1h, max - 168h), default is 24h.                                                                                         
+                                                                                                                                                              
+      [1m--volume[0m (string array)                                                                                                                                 
+         Volume mount in SOURCE:CONTAINER_PATH or SOURCE:CONTAINER_PATH:MODE format. MODE: rw, ro (default: rw). Repeatable.                                  
+                                                                                                                                                              
+      [1m--working-dir[0m (string)                                                                                                                                  
+         Working directory (absolute path).                                                                                                                   
+                                                                                                                                                              
+[1m[0m[1m[0m  [1mGLOBAL[0m[1m OPTIONS[0m                                                                                                                                              
+                                                                                                                                                              
+      [1m-h, --help[0m (bool)                                                                                                                                       
+         Show this message.                                                                                                                                   
+                                                                                                                                                              
+      [1m-p, --profile[0m (string)                                                                                                                                  
+         Set a profile for interacting with the cloud.                                                                                                        
+                                                                                                                                                              
+      [1m--format[0m (string)                                                                                                                                       
+         Output format. Supported values: yaml|json|jsonpath|table|text.                                                                                      
+                                                                                                                                                              
+      [1m-f, --file[0m (string)                                                                                                                                     
+         Input file. For 'update' commands automatically set --full=true.                                                                                     
+                                                                                                                                                              
+      [1m-c, --config[0m (string)                                                                                                                                   
+         Provide path to config file.                                                                                                                         
+                                                                                                                                                              
+      [1m--debug[0m (bool)                                                                                                                                          
+         Enable debug logs.                                                                                                                                   
+                                                                                                                                                              
+      [1m--color[0m (bool)                                                                                                                                          
+         Enable colored output.                                                                                                                               
+                                                                                                                                                              
+      [1m--no-browser[0m (bool)                                                                                                                                     
+         Do not open browser automatically on auth.                                                                                                           
+                                                                                                                                                              
+      [1m--insecure[0m (bool)                                                                                                                                       
+         Disable transport security.                                                                                                                          
+                                                                                                                                                              
+      [1m--auth-timeout[0m (duration: 2h30m10s)                                                                                                                     
+         Set the timeout for the request including authentication process, default is 15m0s.                                                                  
+                                                                                                                                                              
+      [1m--per-retry-timeout[0m (duration: 2h30m10s)                                                                                                                
+         Set the timeout for each retry attempt, default is 20s.                                                                                              
+                                                                                                                                                              
+      [1m--retries[0m (uint)                                                                                                                                        
+         Set the number of retry attempts, 1 is disable retries, default is 3.                                                                                
+                                                                                                                                                              
+      [1m--no-check-update[0m (bool)                                                                                                                                
+         Suppress check for updates.                                                                                                                          
+
