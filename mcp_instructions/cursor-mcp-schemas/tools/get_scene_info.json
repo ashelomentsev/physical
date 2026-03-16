@@ -1,0 +1,22 @@
+{
+  "name": "get_scene_info",
+  "description": "Ping status of Isaac Sim Extension Server",
+  "arguments": {
+    "type": "object",
+    "properties": {},
+    "title": "get_scene_infoArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "get_scene_infoOutput"
+  }
+}

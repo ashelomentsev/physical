@@ -1,0 +1,28 @@
+{
+  "name": "get_robot_state",
+  "description": "Get comprehensive robot state for policy observations.\n\n    Returns joint positions, velocities, base pose, base velocities, and other\n    sensor-like data needed for policy inference. The state format matches typical\n    RL observation spaces (joint states + base states + IMU-like data).\n\n    Args:\n        robot_prim_path: USD path to the robot articulation (default: /G1)\n\n    Returns:\n        JSON string with robot state including:\n        - joint_positions: List of joint angles (radians)\n        - joint_velocities: List of joint velocities (rad/s)\n        - base_position: [x, y, z] position in world frame (meters)\n        - base_orientation: [w, x, y, z] quaternion orientation\n        - base_linear_velocity: [vx, vy, vz] linear velocity (m/s)\n        - base_angular_velocity: [wx, wy, wz] angular velocity (rad/s)\n        - num_joints: Number of controllable joints\n        - dof_names: List of joint names\n\n    Example:\n        state = get_robot_state(\"/G1\")\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "robot_prim_path": {
+        "default": "/G1",
+        "title": "Robot Prim Path",
+        "type": "string"
+      }
+    },
+    "title": "get_robot_stateArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "get_robot_stateOutput"
+  }
+}

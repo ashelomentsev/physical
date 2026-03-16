@@ -1,0 +1,40 @@
+{
+  "name": "create_robot",
+  "description": "Create a robot in the Isaac scene. Directly create robot prim in stage at the right position. For any creation of robot, you need to call create_physics_scene() first. call create_robot() as first attmpt beofre call execute_script().\n\n    Args:\n        robot_type: The type of robot to create. Available options:\n            - \"franka\": Franka Emika Panda robot\n            - \"jetbot\": NVIDIA JetBot robot\n            - \"carter\": Carter delivery robot\n            - \"g1\": Unitree G1 full USD (43 DOF)\n            - \"g1_minimal\": Unitree G1 minimal USD (37 DOF; use for Isaac Lab-trained policy)\n            - \"go1\": Unitree Go1 quadruped robot\n\n    Returns:\n        String with result information.\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "robot_type": {
+        "default": "g1",
+        "title": "Robot Type",
+        "type": "string"
+      },
+      "position": {
+        "default": [
+          0,
+          0,
+          0
+        ],
+        "items": {
+          "type": "number"
+        },
+        "title": "Position",
+        "type": "array"
+      }
+    },
+    "title": "create_robotArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "create_robotOutput"
+  }
+}

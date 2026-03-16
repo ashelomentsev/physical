@@ -1,0 +1,52 @@
+{
+  "name": "apply_joint_actions",
+  "description": "Apply joint control commands to the robot.\n\n    Send position, velocity, or torque commands to robot joints. At least one control\n    mode must be specified. For position control with PD gains, only joint_positions\n    is needed (gains are set by load_policy or reset_robot_pose).\n\n    Args:\n        robot_prim_path: USD path to the robot articulation (default: /G1)\n        joint_positions: Target joint positions in radians (optional)\n        joint_velocities: Target joint velocities in rad/s (optional)\n        joint_efforts: Target joint torques in N·m (optional)\n\n    Returns:\n        String with action application status\n\n    Example:\n        # Position control (most common for walking policies)\n        apply_joint_actions(\"/G1\", joint_positions=[0.0, 0.2, -0.4, ...])\n\n        # Combined position + velocity\n        apply_joint_actions(\"/G1\", joint_positions=[...], joint_velocities=[...])\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "robot_prim_path": {
+        "default": "/G1",
+        "title": "Robot Prim Path",
+        "type": "string"
+      },
+      "joint_positions": {
+        "default": null,
+        "items": {
+          "type": "number"
+        },
+        "title": "Joint Positions",
+        "type": "array"
+      },
+      "joint_velocities": {
+        "default": null,
+        "items": {
+          "type": "number"
+        },
+        "title": "Joint Velocities",
+        "type": "array"
+      },
+      "joint_efforts": {
+        "default": null,
+        "items": {
+          "type": "number"
+        },
+        "title": "Joint Efforts",
+        "type": "array"
+      }
+    },
+    "title": "apply_joint_actionsArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "apply_joint_actionsOutput"
+  }
+}

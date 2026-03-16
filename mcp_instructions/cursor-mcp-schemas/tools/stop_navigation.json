@@ -1,0 +1,22 @@
+{
+  "name": "stop_navigation",
+  "description": "Stop the active point-to-point navigation.\n\n    Cancels the navigation callback and zeroes velocity commands. The policy walk\n    continues running so the robot remains balanced.\n\n    Example:\n        stop_navigation()\n        # Returns: \"Navigation stopped (was: navigating). Policy walk is still running.\"\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {},
+    "title": "stop_navigationArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "stop_navigationOutput"
+  }
+}

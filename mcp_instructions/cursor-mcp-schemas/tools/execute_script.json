@@ -1,0 +1,30 @@
+{
+  "name": "execute_script",
+  "description": "\n    Before execute script pls check prompt from asset_creation_strategy() to ensure the scene is properly initialized.\n    Execute arbitrary Python code in Isaac Sim. Before executing any code, first verify if get_scene_info() has been called to ensure the scene is properly initialized. Always print the formatted code into chat to confirm before execution to confirm its correctness. \n    Before execute script pls check if create_physics_scene() has been called to ensure the physics scene is properly initialized.\n    When working with robots, always try using the create_robot() function first before resorting to execute_script(). The create_robot() function provides a simpler, more reliable way to add robots to your scene with proper initialization and positioning. Only use execute_script() for robot creation when you need custom configurations or behaviors not supported by create_robot().\n\n    For physics simulation, avoid using simulation_context to run simulations in the main thread as this can cause blocking. Instead, use the World class with async methods for initializing physics and running simulations. For example, use my_world = World(physics_dt=1.0/60.0) and my_world.step_async() in a loop, which allows for better performance and responsiveness. If you need to wait for physics to stabilize, consider using my_world.play() followed by multiple step_async() calls.\n    To create an simulation of Franka robot, the code should be like this:\nfrom omni.isaac.core import SimulationContext\nfrom omni.isaac.core.utils.prims import create_prim\nfrom omni.isaac.core.utils.stage import add_reference_to_stage, is_stage_loading\nfrom omni.isaac.nucleus import get_assets_root_path\n\nassets_root_path = get_assets_root_path()\nasset_path = assets_root_path + \"/Isaac/Robots/Franka/franka_alt_fingers.usd\"\nsimulation_context = SimulationContext()\nadd_reference_to_stage(asset_path, \"/Franka\")\n#create_prim(\"/DistantLight\", \"DistantLight\")\n\n\n\n\n    To control the Franka robot, the code should be like this:\n\nfrom omni.isaac.core import SimulationContext\nfrom omni.isaac.core.articulations import Articulation\nfrom omni.isaac.core.utils.stage import add_reference_to_stage\nfrom omni.isaac.nucleus import get_assets_root_path\n\nmy_world = World(stage_units_in_meters=1.0)\n\nassets_root_path = get_assets_root_path()\nasset_path = assets_root_path + \"/Isaac/Robots/Franka/franka_alt_fingers.usd\"\n\nsimulation_context = SimulationContext()\nadd_reference_to_stage(asset_path, \"/Franka\")\n\n# need to initialize physics getting any articulation..etc\nsimulation_context.initialize_physics()\nart = Articulation(\"/Franka\")\nart.initialize(my_world.physics_sim_view)\ndof_ptr = art.get_dof_index(\"panda_joint2\")\n\nsimulation_context.play()\n# NOTE: before interacting with dc directly you need to step physics for one step at least\n# simulation_context.step(render=True) which happens inside .play()\nfor i in range(1000):\n    art.set_joint_positions([-1.5], [dof_ptr])\n    simulation_context.step(render=True)\n\nsimulation_context.stop()\n\n\n\n    Parameters:\n    - code: The Python code to execute, e.g. \"omni.kit.commands.execute(\"CreatePrim\", prim_type=\"Sphere\")\"\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "code": {
+        "title": "Code",
+        "type": "string"
+      }
+    },
+    "required": [
+      "code"
+    ],
+    "title": "execute_scriptArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "execute_scriptOutput"
+  }
+}

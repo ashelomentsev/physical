@@ -1,0 +1,28 @@
+{
+  "name": "get_robot_pose",
+  "description": "Return world position and orientation (quaternion w,x,y,z) for the prim (e.g. G1 robot root).\n    Used for navigation so the AI can compute the next velocity command. For 2D navigation, yaw can be derived from the quaternion.",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "prim_path": {
+        "default": "/G1",
+        "title": "Prim Path",
+        "type": "string"
+      }
+    },
+    "title": "get_robot_poseArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "get_robot_poseOutput"
+  }
+}

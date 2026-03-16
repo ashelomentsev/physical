@@ -1,0 +1,22 @@
+{
+  "name": "stop_g1_policy_walk",
+  "description": "Stop the continuous policy walking callback.\n\n    Unsubscribes the policy inference callback, stopping the robot's walking motion.\n    The loaded policy and robot articulation remain in memory for potential reuse.\n\n    Returns:\n        String with stop status including total steps executed\n\n    Example:\n        # After starting policy walk\n        stop_g1_policy_walk()\n        # Returns: \"Policy walk stopped after 1523 steps\"\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {},
+    "title": "stop_g1_policy_walkArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "stop_g1_policy_walkOutput"
+  }
+}

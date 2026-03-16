@@ -1,0 +1,38 @@
+{
+  "name": "set_velocity_command",
+  "description": "Set the velocity command used by the G1 policy callback (when running the policy script via execute_script).\n    Units: m/s for linear, rad/s for yaw. Values are clamped to G1 flat ranges (lin_vel_x [0,1], lin_vel_y [-0.5,0.5], ang_vel_z [-1,1]).\n    To stop the robot, use set_velocity_command(0, 0, 0).",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "lin_vel_x": {
+        "default": 0.5,
+        "title": "Lin Vel X",
+        "type": "number"
+      },
+      "lin_vel_y": {
+        "default": 0,
+        "title": "Lin Vel Y",
+        "type": "number"
+      },
+      "ang_vel_z": {
+        "default": 0,
+        "title": "Ang Vel Z",
+        "type": "number"
+      }
+    },
+    "title": "set_velocity_commandArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "set_velocity_commandOutput"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "start_g1_policy_walk",
+  "description": "Start continuous policy-driven walking using a persistent callback.\n\n    This tool loads a trained RL policy and registers a physics callback that runs\n    inference on every simulation step. The robot will continuously walk based on\n    the policy until stop_g1_policy_walk is called.\n\n    Unlike run_policy_loop which runs for a fixed number of steps, this creates a\n    persistent callback that keeps the robot walking indefinitely. The articulation\n    and policy state are kept in the extension memory across frames.\n\n    Args:\n        policy_path: Absolute path to trained policy file (.zip for SB3, .pt/.pth for PyTorch)\n        robot_prim_path: USD path to the robot articulation (default: /G1)\n        target_velocity: Target forward velocity in m/s (default: 0.5)\n        deterministic: Use deterministic policy actions vs stochastic (default: True)\n\n    Returns:\n        String with callback registration status\n\n    Workflow:\n        1. First call: Loads policy, registers callback that will:\n           - On first frame: Reset robot to standing pose and start timeline\n           - On subsequent frames: Run policy inference and apply joint commands\n        2. The callback persists across frames until stop_g1_policy_walk is called\n        3. Robot automatically resets if it falls (height < 0.3m)\n\n    Example:\n        # Start the robot walking\n        start_g1_policy_walk(\n            policy_path=\"/workspace/checkpoints_terminal/best_model.zip\",\n            robot_prim_path=\"/G1\",\n            target_velocity=0.5\n        )\n\n        # Robot walks continuously in Isaac Sim...\n\n        # Stop when done\n        stop_g1_policy_walk()\n\n    Note:\n        - Requires a physics scene and G1 robot to be created first\n        - The policy and articulation remain loaded for efficiency\n        - Use get_scene_info and create_physics_scene before calling this\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "policy_path": {
+        "title": "Policy Path",
+        "type": "string"
+      },
+      "robot_prim_path": {
+        "default": "/G1",
+        "title": "Robot Prim Path",
+        "type": "string"
+      },
+      "target_velocity": {
+        "default": 0.5,
+        "title": "Target Velocity",
+        "type": "number"
+      },
+      "deterministic": {
+        "default": true,
+        "title": "Deterministic",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "policy_path"
+    ],
+    "title": "start_g1_policy_walkArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "start_g1_policy_walkOutput"
+  }
+}

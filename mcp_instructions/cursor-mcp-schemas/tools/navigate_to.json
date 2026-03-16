@@ -1,0 +1,48 @@
+{
+  "name": "navigate_to",
+  "description": "Navigate the G1 robot to a target XY position using the locomotion policy.\n\n    Starts the policy walk if it is not already running (policy_path required in that\n    case), then continuously steers the robot toward the goal each physics step.\n    Returns immediately (non-blocking). Call get_navigation_status() to monitor\n    progress and stop_navigation() to cancel early.\n\n    Args:\n        target_position: [x, y] world coordinates in metres.\n        robot_prim_path: USD prim path of the robot root (default \"/G1\").\n        policy_path: Path to the trained locomotion policy (.pt/.pth). Required if\n                     start_g1_policy_walk has not already been called.\n        arrival_threshold: Distance in metres at which the robot is considered\n                           arrived (default 0.5 m).\n\n    Example:\n        navigate_to(target_position=[5.0, 3.0], policy_path=\"/path/to/policy.pt\")\n        # Returns: \"Navigation started toward [5.00, 3.00]. Call get_navigation_status() to monitor.\"\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "target_position": {
+        "items": {
+          "type": "number"
+        },
+        "title": "Target Position",
+        "type": "array"
+      },
+      "robot_prim_path": {
+        "default": "/G1",
+        "title": "Robot Prim Path",
+        "type": "string"
+      },
+      "policy_path": {
+        "default": "",
+        "title": "Policy Path",
+        "type": "string"
+      },
+      "arrival_threshold": {
+        "default": 0.5,
+        "title": "Arrival Threshold",
+        "type": "number"
+      }
+    },
+    "required": [
+      "target_position"
+    ],
+    "title": "navigate_toArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "navigate_toOutput"
+  }
+}

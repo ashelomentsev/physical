@@ -1,0 +1,22 @@
+{
+  "name": "stop_simulation",
+  "description": "Stop the physics simulation (timeline stop).\n\n    Stops the Isaac Sim timeline, pausing physics simulation. Also stops any running\n    policy loops. Use this before modifying the scene or resetting robot poses.\n\n    Returns:\n        String with simulation stop status\n\n    Example:\n        stop_simulation()\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {},
+    "title": "stop_simulationArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "stop_simulationOutput"
+  }
+}

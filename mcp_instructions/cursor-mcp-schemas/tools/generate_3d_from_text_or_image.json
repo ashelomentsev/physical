@@ -1,0 +1,57 @@
+{
+  "name": "generate_3d_from_text_or_image",
+  "description": "\n    Generate a 3D model from text or image, load it into the scene and transform it.\n\n    Args:\n        text_prompt (str, optional): Text prompt for 3D generation\n        image_url (str, optional): URL of image for 3D generation\n        position (list, optional): Position to place the model [x, y, z]\n        scale (list, optional): Scale of the model [x, y, z]\n\n    Returns:\n        String with the task_id and prim_path information\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "text_prompt": {
+        "default": null,
+        "title": "Text Prompt",
+        "type": "string"
+      },
+      "image_url": {
+        "default": null,
+        "title": "Image Url",
+        "type": "string"
+      },
+      "position": {
+        "default": [
+          0,
+          0,
+          50
+        ],
+        "items": {
+          "type": "number"
+        },
+        "title": "Position",
+        "type": "array"
+      },
+      "scale": {
+        "default": [
+          10,
+          10,
+          10
+        ],
+        "items": {
+          "type": "number"
+        },
+        "title": "Scale",
+        "type": "array"
+      }
+    },
+    "title": "generate_3d_from_text_or_imageArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "generate_3d_from_text_or_imageOutput"
+  }
+}

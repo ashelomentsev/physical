@@ -1,0 +1,22 @@
+{
+  "name": "start_simulation",
+  "description": "Start the physics simulation (timeline play).\n\n    Starts the Isaac Sim timeline, enabling physics simulation. Must be called before\n    running policies or stepping the simulation. The simulation continues running until\n    stop_simulation is called.\n\n    Returns:\n        String with simulation start status\n\n    Example:\n        start_simulation()\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {},
+    "title": "start_simulationArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "start_simulationOutput"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "asset_creation_strategy",
+  "description": "Defines the preferred strategy for creating assets in Isaac Sim",
+  "arguments": []
+}

@@ -1,0 +1,22 @@
+{
+  "name": "get_navigation_status",
+  "description": "Return the current navigation state.\n\n    Reports nav_active, nav_status (idle/navigating/arrived/failed),\n    target_position, current_position, and distance_to_target.\n\n    Example:\n        get_navigation_status()\n        # Returns JSON with: nav_status=\"navigating\", distance_to_target=3.21\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {},
+    "title": "get_navigation_statusArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "get_navigation_statusOutput"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "load_policy",
+  "description": "Load a pre-trained RL policy from .zip or .pt file for robot control.\n\n    This tool loads trained policies from Stable Baselines3 (.zip) or PyTorch (.pt/.pth) formats.\n    After loading, use run_policy_loop to execute the policy or use get_robot_state and\n    apply_joint_actions for manual control loops.\n\n    Args:\n        policy_path: Absolute path to the trained policy file\n                    - .zip for Stable Baselines3 (PPO, SAC, etc.)\n                    - .pt or .pth for PyTorch/RSL-RL checkpoints\n        robot_prim_path: USD path to the robot articulation (default: /G1)\n\n    Returns:\n        String with loading status and policy information\n\n    Example:\n        load_policy(\"/isaac-sim/g1_walking_trained.zip\", \"/G1\")\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "policy_path": {
+        "title": "Policy Path",
+        "type": "string"
+      },
+      "robot_prim_path": {
+        "default": "/G1",
+        "title": "Robot Prim Path",
+        "type": "string"
+      }
+    },
+    "required": [
+      "policy_path"
+    ],
+    "title": "load_policyArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "load_policyOutput"
+  }
+}

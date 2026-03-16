@@ -1,0 +1,44 @@
+{
+  "name": "reset_robot_pose",
+  "description": "Reset robot to a specific pose (typically standing configuration).\n\n    Resets the robot's base position and joint configuration. If joint_positions is not\n    provided, uses the default standing pose for the robot type. This is essential before\n    running a policy to ensure the robot starts in a valid configuration.\n\n    Args:\n        robot_prim_path: USD path to the robot articulation (default: /G1)\n        base_position: Base position [x, y, z] in meters (default: [0, 0, 0.8] for G1)\n        joint_positions: Joint positions in radians (default: G1 standing pose)\n\n    Returns:\n        String with reset status\n\n    Example:\n        # Reset to default standing pose\n        reset_robot_pose(\"/G1\")\n\n        # Reset to custom pose\n        reset_robot_pose(\"/G1\", base_position=[0, 0, 1.0], joint_positions=[0]*43)\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "robot_prim_path": {
+        "default": "/G1",
+        "title": "Robot Prim Path",
+        "type": "string"
+      },
+      "base_position": {
+        "default": null,
+        "items": {
+          "type": "number"
+        },
+        "title": "Base Position",
+        "type": "array"
+      },
+      "joint_positions": {
+        "default": null,
+        "items": {
+          "type": "number"
+        },
+        "title": "Joint Positions",
+        "type": "array"
+      }
+    },
+    "title": "reset_robot_poseArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "reset_robot_poseOutput"
+  }
+}

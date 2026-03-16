@@ -1,0 +1,54 @@
+{
+  "name": "transform",
+  "description": "\n    Transform a USD model by applying position and scale.\n\n    Args:\n        prim_path (str): Path to the USD prim to transform\n        position (list, optional): The position to set [x, y, z]\n        scale (list, optional): The scale to set [x, y, z]\n\n    Returns:\n        String with transformation result\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "prim_path": {
+        "title": "Prim Path",
+        "type": "string"
+      },
+      "position": {
+        "default": [
+          0,
+          0,
+          50
+        ],
+        "items": {
+          "type": "number"
+        },
+        "title": "Position",
+        "type": "array"
+      },
+      "scale": {
+        "default": [
+          10,
+          10,
+          10
+        ],
+        "items": {
+          "type": "number"
+        },
+        "title": "Scale",
+        "type": "array"
+      }
+    },
+    "required": [
+      "prim_path"
+    ],
+    "title": "transformArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "transformOutput"
+  }
+}

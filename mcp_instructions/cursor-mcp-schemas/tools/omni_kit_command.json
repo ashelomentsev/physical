@@ -1,0 +1,33 @@
+{
+  "name": "omni_kit_command",
+  "description": "Execute an Omni Kit command.\n\n    Args:\n        command: The Omni Kit command to execute.\n        prim_type: The primitive type for the command.\n\n    Returns:\n        String with result information.\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "command": {
+        "default": "CreatePrim",
+        "title": "Command",
+        "type": "string"
+      },
+      "prim_type": {
+        "default": "Sphere",
+        "title": "Prim Type",
+        "type": "string"
+      }
+    },
+    "title": "omni_kit_commandArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "omni_kit_commandOutput"
+  }
+}

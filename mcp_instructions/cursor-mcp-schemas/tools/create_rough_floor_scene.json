@@ -1,0 +1,48 @@
+{
+  "name": "create_rough_floor_scene",
+  "description": "Create a physics scene with a ROUGH floor (heightfield with bumps/pits). Always uses rough terrain; no floor_type param.\n\n    Use this when you want a rough floor. Optional: roughness (m), terrain_resolution (m), terrain_seed.\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "objects": {
+        "default": [],
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "title": "Objects",
+        "type": "array"
+      },
+      "roughness": {
+        "default": 0.25,
+        "title": "Roughness",
+        "type": "number"
+      },
+      "terrain_resolution": {
+        "default": 1,
+        "title": "Terrain Resolution",
+        "type": "number"
+      },
+      "terrain_seed": {
+        "default": 42,
+        "title": "Terrain Seed",
+        "type": "integer"
+      }
+    },
+    "title": "create_rough_floor_sceneArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "additionalProperties": true,
+        "title": "Result",
+        "type": "object"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "create_rough_floor_sceneOutput"
+  }
+}

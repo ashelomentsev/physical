@@ -1,0 +1,75 @@
+{
+  "name": "create_physics_scene",
+  "description": "Create a physics scene with multiple objects. Before create physics scene, you need to call get_scene_info() first to verify availability of connection.\n\n    Args:\n        objects: List of objects to create. Each object should have at least 'type' and 'position'. \n        floor: Whether to create a floor. default is True\n        floor_type: \"flat\" = ground plane; \"rough\" = heightfield mesh with bumps. default is \"flat\"\n        roughness: When floor_type=\"rough\", height amplitude in meters (±roughness). Larger = rougher. default 0.03\n        terrain_resolution: When floor_type=\"rough\", grid cell size in meters. Smaller = finer bumps. default 0.25\n        terrain_seed: When floor_type=\"rough\", random seed for terrain pattern. default 42\n        gravity: The gravity vector. Default is [0, 0, -981.0] (cm/s^2).\n        scene_name: The name of the scene. default is \"physics_scene\"\n\n    Returns:\n        Dictionary with result information.\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "objects": {
+        "default": [],
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "title": "Objects",
+        "type": "array"
+      },
+      "floor": {
+        "default": true,
+        "title": "Floor",
+        "type": "boolean"
+      },
+      "gravity": {
+        "default": [
+          0,
+          -0.981,
+          0
+        ],
+        "items": {
+          "type": "number"
+        },
+        "title": "Gravity",
+        "type": "array"
+      },
+      "scene_name": {
+        "default": "physics_scene",
+        "title": "Scene Name",
+        "type": "string"
+      },
+      "floor_type": {
+        "default": "flat",
+        "title": "Floor Type",
+        "type": "string"
+      },
+      "roughness": {
+        "default": 0.03,
+        "title": "Roughness",
+        "type": "number"
+      },
+      "terrain_resolution": {
+        "default": 0.25,
+        "title": "Terrain Resolution",
+        "type": "number"
+      },
+      "terrain_seed": {
+        "default": 42,
+        "title": "Terrain Seed",
+        "type": "integer"
+      }
+    },
+    "title": "create_physics_sceneArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "additionalProperties": true,
+        "title": "Result",
+        "type": "object"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "create_physics_sceneOutput"
+  }
+}

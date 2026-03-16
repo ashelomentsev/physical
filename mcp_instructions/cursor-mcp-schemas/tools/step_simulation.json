@@ -1,0 +1,33 @@
+{
+  "name": "step_simulation",
+  "description": "Step the simulation forward by a specified number of steps.\n\n    Advances the physics simulation by num_steps. Each step is typically 1/60 second\n    (16.67ms) by default. Use this for fine-grained control or when implementing\n    custom control loops.\n\n    Args:\n        num_steps: Number of simulation steps to execute (default: 1)\n        render: Whether to render the viewport during stepping (default: True)\n\n    Returns:\n        String with step completion status\n\n    Example:\n        # Single step\n        step_simulation(1)\n\n        # Run 100 steps without rendering (faster)\n        step_simulation(100, render=False)\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "num_steps": {
+        "default": 1,
+        "title": "Num Steps",
+        "type": "integer"
+      },
+      "render": {
+        "default": true,
+        "title": "Render",
+        "type": "boolean"
+      }
+    },
+    "title": "step_simulationArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "step_simulationOutput"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "name": "search_3d_usd_by_text",
+  "description": "\n    Search for a 3D model using text prompt in USD libraries, then load and position it in the scene.\n\n    Args:\n        text_prompt (str): Text description to search for matching 3D models\n        target_path (str, optional): Path where the USD model will be placed in the scene\n        position (list, optional): Position coordinates [x, y, z] for placing the model\n        scale (list, optional): Scale factors [x, y, z] to resize the model\n\n    Returns:\n        String with search results including task_id and prim_path of the loaded model\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "text_prompt": {
+        "default": null,
+        "title": "Text Prompt",
+        "type": "string"
+      },
+      "target_path": {
+        "default": "/World/my_usd",
+        "title": "Target Path",
+        "type": "string"
+      },
+      "position": {
+        "default": [
+          0,
+          0,
+          50
+        ],
+        "items": {
+          "type": "number"
+        },
+        "title": "Position",
+        "type": "array"
+      },
+      "scale": {
+        "default": [
+          10,
+          10,
+          10
+        ],
+        "items": {
+          "type": "number"
+        },
+        "title": "Scale",
+        "type": "array"
+      }
+    },
+    "title": "search_3d_usd_by_textArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "search_3d_usd_by_textOutput"
+  }
+}

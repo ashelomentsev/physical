@@ -1,0 +1,38 @@
+{
+  "name": "run_policy_loop",
+  "description": "Run the loaded policy in an inference loop.\n\n    Executes the pre-trained policy for num_steps, automatically handling:\n    1. Robot pose reset to standing\n    2. Observation collection (get_robot_state)\n    3. Policy forward pass (action inference)\n    4. Action application (apply_joint_actions)\n    5. Simulation stepping\n    6. Termination detection (falling)\n\n    This is the main tool for executing trained walking policies without manual control.\n\n    Args:\n        robot_prim_path: USD path to the robot articulation (default: /G1)\n        num_steps: Maximum number of steps to run (default: 100)\n        deterministic: Use deterministic policy actions vs stochastic (default: True)\n\n    Returns:\n        JSON string with episode results including:\n        - total_reward: Sum of rewards over the episode\n        - mean_reward: Average reward per step\n        - steps_completed: Number of steps before termination or completion\n        - message: Status message\n\n    Example:\n        # Run policy for 500 steps\n        result = run_policy_loop(\"/G1\", num_steps=500, deterministic=True)\n\n    Note:\n        Requires a policy to be loaded first using load_policy().\n        The simulation must be started (start_simulation) before calling this.\n    ",
+  "arguments": {
+    "type": "object",
+    "properties": {
+      "robot_prim_path": {
+        "default": "/G1",
+        "title": "Robot Prim Path",
+        "type": "string"
+      },
+      "num_steps": {
+        "default": 100,
+        "title": "Num Steps",
+        "type": "integer"
+      },
+      "deterministic": {
+        "default": true,
+        "title": "Deterministic",
+        "type": "boolean"
+      }
+    },
+    "title": "run_policy_loopArguments"
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "result": {
+        "title": "Result",
+        "type": "string"
+      }
+    },
+    "required": [
+      "result"
+    ],
+    "title": "run_policy_loopOutput"
+  }
+}
