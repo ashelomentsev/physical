@@ -1,0 +1,504 @@
+#!/usr/bin/env python3
+import argparse
+import json
+import subprocess
+import sys
+import textwrap
+from pathlib import Path
+
+
+DEFAULT_HOST = "195.242.13.165"
+DEFAULT_USER = "splatica"
+DEFAULT_PORT = 8766
+DEFAULT_POLICY_PATH = "/home/workspace/exported/g1_nav_flat_from_rough_1450_jit.pt"
+
+
+HELPER_CODE = f"""
+import math
+import numpy as np
+import omni
+import carb
+import torch
+from omni.isaac.core import World
+from isaacsim.core.prims import SingleArticulation
+from isaacsim.core.utils.types import ArticulationAction
+from pxr import UsdGeom, Usd
+
+ROBOTCTL_POLICY_PATH = {DEFAULT_POLICY_PATH!r}
+ROBOTCTL_ACTION_SCALE = 0.5
+ROBOTCTL_HEIGHT_SCAN_DIM = 187
+ROBOTCTL_FLAT_HEIGHT_SCAN_VALUE = 0.25
+ROBOTCTL_RESET_HEIGHT = 0.74
+ROBOTCTL_KPS = np.array([200.0, 200.0, 200.0, 150.0, 150.0, 40.0, 40.0, 150.0, 150.0, 40.0, 40.0, 200.0, 200.0, 40.0, 40.0, 20.0, 20.0, 40.0, 40.0, 20.0, 20.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0, 40.0], dtype=np.float32)
+ROBOTCTL_KDS = np.array([5.0, 5.0, 5.0, 5.0, 5.0, 10.0, 10.0, 5.0, 5.0, 10.0, 10.0, 5.0, 5.0, 10.0, 10.0, 2.0, 2.0, 10.0, 10.0, 2.0, 2.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0], dtype=np.float32)
+
+
+def robotctl_stage():
+    stage = omni.usd.get_context().get_stage()
+    if stage is None:
+        raise RuntimeError("No open Isaac Sim stage")
+    return stage
+
+
+def robotctl_iface():
+    iface = omni.timeline.get_timeline_interface()
+    iface.set_auto_update(True)
+    iface.play()
+    return iface
+
+
+def robotctl_pick_robot_path():
+    stage = robotctl_stage()
+    for path in ["/World/ImportedRobot", "/G1"]:
+        prim = stage.GetPrimAtPath(path)
+        if prim.IsValid():
+            return path
+    raise RuntimeError("No controllable robot found at /World/ImportedRobot or /G1")
+
+
+def robotctl_prim_pos(path):
+    prim = robotctl_stage().GetPrimAtPath(path)
+    if not prim.IsValid():
+        raise RuntimeError(f"Missing prim: {{path}}")
+    xf = UsdGeom.Xformable(prim)
+    mat = xf.ComputeLocalToWorldTransform(Usd.TimeCode.Default())
+    t = mat.ExtractTranslation()
+    return np.array([float(t[0]), float(t[1]), float(t[2])], dtype=np.float32)
+
+
+def robotctl_box_positions():
+    stage = robotctl_stage()
+    candidates = [
+        ("/World/ImportedWorld/obstacle_left", "/World/ImportedWorld/obstacle_right"),
+        ("/World/obstacle_left", "/World/obstacle_right"),
+    ]
+    for left_path, right_path in candidates:
+        left = stage.GetPrimAtPath(left_path)
+        right = stage.GetPrimAtPath(right_path)
+        if left.IsValid() and right.IsValid():
+            return {{
+                "left_path": left_path,
+                "right_path": right_path,
+                "left": robotctl_prim_pos(left_path),
+                "right": robotctl_prim_pos(right_path),
+            }}
+    return None
+
+
+def robotctl_box_midpoint():
+    boxes = robotctl_box_positions()
+    if boxes is None:
+        return None
+    return 0.5 * (boxes["left"] + boxes["right"])
+
+
+def robotctl_quat_from_yaw(yaw):
+    return np.array([math.cos(yaw / 2.0), 0.0, 0.0, math.sin(yaw / 2.0)], dtype=np.float32)
+
+
+def robotctl_yaw_from_quat(q):
+    w, x, y, z = [float(v) for v in q]
+    siny_cosp = 2.0 * (w * z + x * y)
+    cosy_cosp = 1.0 - 2.0 * (y * y + z * z)
+    return math.atan2(siny_cosp, cosy_cosp)
+
+
+def robotctl_rpy_from_quat(q):
+    w, x, y, z = [float(v) for v in q]
+    sinr_cosp = 2.0 * (w * x + y * z)
+    cosr_cosp = 1.0 - 2.0 * (x * x + y * y)
+    roll = math.atan2(sinr_cosp, cosr_cosp)
+    sinp = 2.0 * (w * y - z * x)
+    pitch = math.copysign(math.pi / 2.0, sinp) if abs(sinp) >= 1.0 else math.asin(sinp)
+    siny_cosp = 2.0 * (w * z + x * y)
+    cosy_cosp = 1.0 - 2.0 * (y * y + z * z)
+    yaw = math.atan2(siny_cosp, cosy_cosp)
+    return [float(roll), float(pitch), float(yaw)]
+
+
+def robotctl_rot_matrix_wxyz(q):
+    w, x, y, z = [float(v) for v in q]
+    return np.array([
+        [1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+        [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+        [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)],
+    ], dtype=np.float32)
+
+
+def robotctl_normalize_angle(angle):
+    while angle > math.pi:
+        angle -= 2 * math.pi
+    while angle < -math.pi:
+        angle += 2 * math.pi
+    return angle
+
+
+def robotctl_safe_vec3(v):
+    if v is None:
+        return np.zeros(3, dtype=np.float32)
+    arr = np.asarray(v, dtype=np.float32).reshape(-1)
+    if arr.shape[0] >= 3:
+        return arr[:3]
+    out = np.zeros(3, dtype=np.float32)
+    out[:arr.shape[0]] = arr
+    return out
+
+
+def robotctl_safe_joint(v, n):
+    if v is None:
+        return np.zeros(n, dtype=np.float32)
+    arr = np.asarray(v, dtype=np.float32).reshape(-1)
+    if arr.shape[0] >= n:
+        return arr[:n]
+    out = np.zeros(n, dtype=np.float32)
+    out[:arr.shape[0]] = arr
+    return out
+
+
+def robotctl_initial_pose():
+    midpoint = robotctl_box_midpoint()
+    if midpoint is None:
+        return np.array([0.0, 0.0, ROBOTCTL_RESET_HEIGHT], dtype=np.float32), robotctl_quat_from_yaw(0.0)
+    pos = np.array([float(midpoint[0]), float(midpoint[1] - 2.5), ROBOTCTL_RESET_HEIGHT], dtype=np.float32)
+    quat = robotctl_quat_from_yaw(math.pi / 2.0)
+    return pos, quat
+
+
+def robotctl_disable_motion():
+    state = globals().setdefault("robotctl_state", {{}})
+    state["enabled"] = False
+    state["mode"] = "idle"
+    state["velocity_command"] = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+    state["last_error"] = None
+
+
+def robotctl_bind(robot_path=None):
+    global robotctl_world, robotctl_robot, robotctl_ctrl, robotctl_policy
+    robotctl_iface()
+    robot_path = robot_path or robotctl_pick_robot_path()
+    try:
+        World.clear_instance()
+    except Exception:
+        pass
+    robotctl_world = World(stage_units_in_meters=1.0)
+    robotctl_world.initialize_physics()
+    robotctl_robot = SingleArticulation(robot_path, name="robotctl_robot", reset_xform_properties=False)
+    robotctl_robot.initialize(robotctl_world.physics_sim_view)
+    robotctl_ctrl = robotctl_robot.get_articulation_controller()
+    try:
+        robotctl_ctrl.set_gains(kps=ROBOTCTL_KPS, kds=ROBOTCTL_KDS)
+    except Exception:
+        pass
+    if "robotctl_policy" not in globals() or robotctl_policy is None:
+        robotctl_policy = torch.jit.load(ROBOTCTL_POLICY_PATH, map_location="cpu")
+        robotctl_policy.eval()
+    state = globals().setdefault("robotctl_state", {{}})
+    state["robot_path"] = robot_path
+    default_state = robotctl_robot.get_joints_default_state()
+    default_pos = np.asarray(default_state.positions, dtype=np.float32)
+    if default_pos.shape[0] != robotctl_robot.num_dof:
+        default_pos = np.zeros(robotctl_robot.num_dof, dtype=np.float32)
+    state["default_pos"] = default_pos
+    state.setdefault("enabled", False)
+    state.setdefault("mode", "idle")
+    state.setdefault("last_action", np.zeros(robotctl_robot.num_dof, dtype=np.float32))
+    state.setdefault("velocity_command", np.array([0.0, 0.0, 0.0], dtype=np.float32))
+    return robot_path
+
+
+def robotctl_build_obs(cmd):
+    state = robotctl_state
+    pos, quat = robotctl_robot.get_world_pose()
+    lin_world = robotctl_safe_vec3(robotctl_robot.get_linear_velocity())
+    ang_world = robotctl_safe_vec3(robotctl_robot.get_angular_velocity())
+    joint_pos = robotctl_safe_joint(robotctl_robot.get_joint_positions(), robotctl_robot.num_dof)
+    joint_vel = robotctl_safe_joint(robotctl_robot.get_joint_velocities(), robotctl_robot.num_dof)
+    rot = robotctl_rot_matrix_wxyz(quat)
+    lin_body = rot.T @ lin_world
+    ang_body = rot.T @ ang_world
+    gravity_body = rot.T @ np.array([0.0, 0.0, -1.0], dtype=np.float32)
+    heights = np.full((ROBOTCTL_HEIGHT_SCAN_DIM,), ROBOTCTL_FLAT_HEIGHT_SCAN_VALUE, dtype=np.float32)
+    obs = np.concatenate([
+        lin_body,
+        ang_body,
+        gravity_body,
+        cmd,
+        joint_pos - state["default_pos"],
+        joint_vel,
+        state["last_action"],
+        heights,
+    ], axis=0).astype(np.float32)
+    return obs, pos, quat
+
+
+def robotctl_apply_policy_command(cmd):
+    state = robotctl_state
+    obs, pos, quat = robotctl_build_obs(cmd)
+    with torch.no_grad():
+        action = robotctl_policy(torch.from_numpy(obs).unsqueeze(0)).detach().cpu().numpy()[0].astype(np.float32)
+    targets = state["default_pos"] + action * ROBOTCTL_ACTION_SCALE
+    robotctl_ctrl.apply_action(ArticulationAction(joint_positions=targets))
+    state["last_action"] = action
+    state["last_base_position"] = [float(v) for v in pos]
+    state["last_obs_dim"] = int(obs.shape[0])
+    state["last_rpy"] = robotctl_rpy_from_quat(quat)
+
+
+def robotctl_set_pose(pos, quat):
+    state = robotctl_state
+    default_pos = state["default_pos"]
+    zeros = np.zeros(robotctl_robot.num_dof, dtype=np.float32)
+    robotctl_robot.set_world_pose(np.asarray(pos, dtype=np.float32), np.asarray(quat, dtype=np.float32))
+    robotctl_robot.set_joint_positions(default_pos)
+    robotctl_robot.set_joint_velocities(zeros)
+    try:
+        robotctl_robot.set_linear_velocity(np.zeros(3, dtype=np.float32))
+        robotctl_robot.set_angular_velocity(np.zeros(3, dtype=np.float32))
+    except Exception:
+        pass
+    try:
+        robotctl_ctrl.apply_action(ArticulationAction(joint_positions=default_pos))
+    except Exception:
+        pass
+    state["last_action"] = np.zeros(robotctl_robot.num_dof, dtype=np.float32)
+    state["last_base_position"] = [float(v) for v in np.asarray(pos, dtype=np.float32)]
+
+
+def robotctl_start_hold(pos, quat):
+    state = robotctl_state
+    robotctl_set_pose(pos, quat)
+    state["enabled"] = True
+    state["mode"] = "hold"
+    state["target_pos"] = np.asarray(pos, dtype=np.float32)
+    state["target_quat"] = np.asarray(quat, dtype=np.float32)
+    state["velocity_command"] = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+    state["last_error"] = None
+    return robotctl_status()
+
+
+def robotctl_reset():
+    robotctl_bind(robotctl_state.get("robot_path"))
+    pos, quat = robotctl_initial_pose()
+    return robotctl_start_hold(pos, quat)
+
+
+def robotctl_stop():
+    robotctl_bind(robotctl_state.get("robot_path"))
+    pos, quat = robotctl_robot.get_world_pose()
+    yaw = robotctl_yaw_from_quat(quat)
+    hold_pos = np.array([float(pos[0]), float(pos[1]), ROBOTCTL_RESET_HEIGHT], dtype=np.float32)
+    hold_quat = robotctl_quat_from_yaw(yaw)
+    return robotctl_start_hold(hold_pos, hold_quat)
+
+
+def robotctl_walk(speed=0.25):
+    return robotctl_velocity(vx=speed, vy=0.0, wz=0.0)
+
+
+def robotctl_velocity(vx=0.25, vy=0.0, wz=0.0):
+    robotctl_bind(robotctl_state.get("robot_path"))
+    state = robotctl_state
+    state["enabled"] = True
+    state["mode"] = "velocity"
+    state["velocity_command"] = np.array([float(vx), float(vy), float(wz)], dtype=np.float32)
+    state["last_error"] = None
+    return robotctl_status()
+
+
+def robotctl_turn_around():
+    robotctl_bind(robotctl_state.get("robot_path"))
+    _, quat = robotctl_robot.get_world_pose()
+    yaw = robotctl_yaw_from_quat(quat)
+    state = robotctl_state
+    state["enabled"] = True
+    state["mode"] = "turn"
+    state["turn_target_yaw"] = robotctl_normalize_angle(yaw + math.pi)
+    state["velocity_command"] = np.array([0.0, 0.0, 0.0], dtype=np.float32)
+    state["last_error"] = None
+    return robotctl_status()
+
+
+def robotctl_status():
+    robotctl_bind(globals().get("robotctl_state", {{}}).get("robot_path"))
+    pos, quat = robotctl_robot.get_world_pose()
+    boxes = robotctl_box_positions()
+    state = robotctl_state
+    status = {{
+        "robot_path": state.get("robot_path"),
+        "mode": state.get("mode"),
+        "enabled": bool(state.get("enabled", False)),
+        "pose": [float(v) for v in pos],
+        "quat_wxyz": [float(v) for v in quat],
+        "rpy_rad": robotctl_rpy_from_quat(quat),
+        "velocity_command": state.get("velocity_command").tolist() if hasattr(state.get("velocity_command"), "tolist") else state.get("velocity_command"),
+        "last_error": state.get("last_error"),
+        "boxes": None,
+    }}
+    if boxes is not None:
+        midpoint = 0.5 * (boxes["left"] + boxes["right"])
+        status["boxes"] = {{
+            "left": [float(v) for v in boxes["left"]],
+            "right": [float(v) for v in boxes["right"]],
+            "midpoint": [float(v) for v in midpoint],
+        }}
+    return status
+
+
+def robotctl_on_update(event):
+    state = robotctl_state
+    if not state.get("enabled", False):
+        return
+    try:
+        mode = state.get("mode", "idle")
+        if mode == "hold":
+            robotctl_set_pose(state["target_pos"], state["target_quat"])
+            state["last_error"] = None
+            return
+
+        if mode == "turn":
+            _, quat = robotctl_robot.get_world_pose()
+            yaw = robotctl_yaw_from_quat(quat)
+            yaw_err = robotctl_normalize_angle(float(state["turn_target_yaw"]) - yaw)
+            if abs(yaw_err) < 0.12:
+                pos, _ = robotctl_robot.get_world_pose()
+                hold_pos = np.array([float(pos[0]), float(pos[1]), ROBOTCTL_RESET_HEIGHT], dtype=np.float32)
+                hold_quat = robotctl_quat_from_yaw(float(state["turn_target_yaw"]))
+                robotctl_start_hold(hold_pos, hold_quat)
+                return
+            cmd = np.array([0.0, 0.0, float(np.clip(1.2 * yaw_err, -0.6, 0.6))], dtype=np.float32)
+        else:
+            cmd = np.asarray(state.get("velocity_command", np.array([0.0, 0.0, 0.0], dtype=np.float32)), dtype=np.float32)
+
+        robotctl_apply_policy_command(cmd)
+        state["velocity_command"] = cmd
+        state["last_error"] = None
+    except Exception as exc:
+        state["last_error"] = str(exc)
+
+
+def robotctl_install():
+    robotctl_bind(globals().get("robotctl_state", {{}}).get("robot_path"))
+    globals()["robotctl_sub"] = None
+    globals()["robotctl_sub"] = omni.kit.app.get_app().get_update_event_stream().create_subscription_to_pop(
+        robotctl_on_update,
+        name="robotctl_update",
+    )
+    return robotctl_status()
+"""
+
+
+def build_remote_payload(code: str, port: int) -> str:
+    payload = {"type": "execute_script", "params": {"code": code}}
+    return textwrap.dedent(
+        f"""
+        import json
+        import socket
+        import sys
+
+        payload = {json.dumps(payload)}
+        sock = socket.socket()
+        sock.settimeout(120)
+        sock.connect(("127.0.0.1", {port}))
+        sock.sendall(json.dumps(payload).encode())
+        data = b""
+        while True:
+            chunk = sock.recv(65536)
+            if not chunk:
+                break
+            data += chunk
+            try:
+                obj = json.loads(data.decode())
+                print(json.dumps(obj))
+                break
+            except Exception:
+                pass
+        sock.close()
+        """
+    ).strip() + "\n"
+
+
+def run_remote_python(script: str, host: str, user: str, key_path: Path) -> dict:
+    cmd = ["ssh", "-i", str(key_path), f"{user}@{host}", "python3", "-"]
+    completed = subprocess.run(cmd, input=script, text=True, capture_output=True)
+    if completed.returncode != 0:
+        raise RuntimeError(completed.stderr.strip() or completed.stdout.strip() or "remote command failed")
+    stdout = completed.stdout.strip()
+    if not stdout:
+        raise RuntimeError("remote command returned no output")
+    return json.loads(stdout)
+
+
+def execute_script(code: str, host: str, user: str, key_path: Path, port: int) -> dict:
+    remote = build_remote_payload(code, port)
+    response = run_remote_python(remote, host, user, key_path)
+    if response.get("status") != "success":
+        raise RuntimeError(response.get("message", "socket command failed"))
+    inner = response.get("result", {})
+    if inner.get("status") != "success":
+        raise RuntimeError(inner.get("message", "execute_script failed"))
+    return inner.get("result")
+
+
+def build_command_code(command: str, args: argparse.Namespace) -> str:
+    command_expr = {
+        "status": "result = robotctl_status()",
+        "reset": "result = robotctl_reset()",
+        "stop": "result = robotctl_stop()",
+        "walk": f"result = robotctl_walk(speed={args.speed!r})",
+        "turn-around": "result = robotctl_turn_around()",
+        "velocity": f"result = robotctl_velocity(vx={args.vx!r}, vy={args.vy!r}, wz={args.wz!r})",
+    }[command]
+    return HELPER_CODE + "\nrobotctl_install()\n" + command_expr + "\n"
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Simple terminal control for the Isaac Sim robot.")
+    parser.add_argument("--host", default=DEFAULT_HOST, help="VM host running Isaac Sim")
+    parser.add_argument("--user", default=DEFAULT_USER, help="SSH user for the VM")
+    parser.add_argument("--key", default=str(Path(__file__).resolve().with_name("id_ed25519")), help="SSH private key path")
+    parser.add_argument("--port", type=int, default=DEFAULT_PORT, help="Local Isaac MCP socket port on the VM")
+
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    subparsers.add_parser("status", help="Show current robot/controller status")
+    subparsers.add_parser("reset", help="Reset robot to an initial upright pose south of the box gap")
+    subparsers.add_parser("stop", help="Stop motion and hold current upright pose")
+
+    walk_parser = subparsers.add_parser("walk", help="Start walking forward with the given speed")
+    walk_parser.add_argument("--speed", type=float, default=0.25, help="Forward speed in m/s")
+
+    subparsers.add_parser("turn-around", help="Turn the robot 180 degrees in place")
+
+    velocity_parser = subparsers.add_parser("velocity", help="Set direct velocity command")
+    velocity_parser.add_argument("--vx", type=float, default=0.25, help="Forward velocity in m/s")
+    velocity_parser.add_argument("--vy", type=float, default=0.0, help="Sideways velocity in m/s")
+    velocity_parser.add_argument("--wz", type=float, default=0.0, help="Yaw rate in rad/s")
+
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    key_path = Path(args.key).expanduser().resolve()
+    if not key_path.exists():
+        print(f"SSH key not found: {key_path}", file=sys.stderr)
+        return 1
+
+    try:
+        result = execute_script(
+            build_command_code(args.command, args),
+            host=args.host,
+            user=args.user,
+            key_path=key_path,
+            port=args.port,
+        )
+    except Exception as exc:
+        print(f"robotctl error: {exc}", file=sys.stderr)
+        return 1
+
+    print(json.dumps(result, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
